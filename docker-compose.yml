@@ -30,3 +30,39 @@ services:
       - API_URL=http://api:8000
     depends_on:
       - api 
+
+  llm:
+    image: vllm/vllm-openai:latest
+    ports:
+      - "8080:8000"
+    volumes:
+      - ./models:/root/.cache/huggingface  # Cache for model downloads
+      - /dev/shm:/dev/shm  # Shared memory for better performance
+    environment:
+      - CUDA_VISIBLE_DEVICES=0,1
+      - RAY_DEDUP_LOGS=0
+      - HF_HOME=/root/.cache/huggingface
+    command: >
+      --model Qwen/Qwen3-32B-AWQ
+      --host 0.0.0.0
+      --port 8000
+      --served-model-name rag-model
+      --max-model-len 4096
+      --tensor-parallel-size 2
+      --gpu-memory-utilization 0.9
+      --max-num-seqs 32
+      --enable-prefix-caching
+      --disable-log-stats
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
