@@ -27,18 +27,18 @@ class EmbeddingBackend(ABC):
         sess_options.inter_op_num_threads = 0
         sess_options.graph_optimization_level = GraphOptimizationLevel.ORT_ENABLE_ALL
         if use_cpu:
-            providers = ['CPUExecutionProvider']
+            providers = ["CPUExecutionProvider"]
         else:
-            providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
+            providers = ["CUDAExecutionProvider", "CPUExecutionProvider"]
         self._session = InferenceSession(LOCAL_EMBED_MODEL_PATH, sess_options=sess_options, providers=providers)
 
     def get_embedding(self, sentences: List[str], max_length: int):
         inputs_onnx = self.tokenizer(
-            sentences, padding=True, truncation=True, max_length=max_length, return_tensors='np'
+            sentences, padding=True, truncation=True, max_length=max_length, return_tensors="np"
         )
         inputs_onnx = {k: v for k, v in inputs_onnx.items()}
 
-        outputs_onnx = self._session.run(output_names=['output'], input_feed=inputs_onnx)
+        outputs_onnx = self._session.run(output_names=["output"], input_feed=inputs_onnx)
         embeddings = outputs_onnx[0][:, 0]
         return embeddings
 
@@ -71,7 +71,7 @@ class EmbeddingBackend(ABC):
                 for k, v in inputs.items():
                     io_binding.bind_cpu_input(k, v)
                 io_binding.synchronize_inputs()
-                io_binding.bind_output('output')
+                io_binding.bind_output("output")
 
                 self._session.run_with_iobinding(io_binding)
 
@@ -91,8 +91,8 @@ class EmbeddingBackend(ABC):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--use_gpu', action="store_true", help='use gpu or not')
-parser.add_argument('--workers', type=int, default=1, help='workers')
+parser.add_argument("--use_gpu", action="store_true", help="use gpu or not")
+parser.add_argument("--workers", type=int, default=1, help="workers")
 args = parser.parse_args()
 print("args:", args)
 

@@ -15,7 +15,7 @@ from app.core.auth import (
     get_current_active_user,
     User,
     fake_users_db,
-    ACCESS_TOKEN_EXPIRE_MINUTES
+    ACCESS_TOKEN_EXPIRE_MINUTES,
 )
 
 app = FastAPI(title="Agentic RAG API")
@@ -34,17 +34,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 class Token(BaseModel):
     access_token: str
     token_type: str
+
 
 class Query(BaseModel):
     text: str
     chat_history: Optional[List[Dict[str, str]]] = None
 
+
 class Document(BaseModel):
     content: str
     source: Optional[str] = None
+
 
 @app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -56,16 +60,12 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
+    access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "bearer"}
 
+
 @app.post("/api/query")
-async def query_endpoint(
-    query: Query,
-    current_user: User = Depends(get_current_active_user)
-):
+async def query_endpoint(query: Query, current_user: User = Depends(get_current_active_user)):
     """Query the agent with RAG capabilities."""
     try:
         response = await agent_service.run(query.text, query.chat_history)
@@ -73,11 +73,9 @@ async def query_endpoint(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.post("/api/documents")
-async def upload_documents(
-    documents: List[Document],
-    current_user: User = Depends(get_current_active_user)
-):
+async def upload_documents(documents: List[Document], current_user: User = Depends(get_current_active_user)):
     """Upload and process documents."""
     try:
         docs = [doc.dict() for doc in documents]
@@ -86,11 +84,9 @@ async def upload_documents(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.post("/api/documents/file")
-async def upload_file(
-    file: UploadFile = File(...),
-    current_user: User = Depends(get_current_active_user)
-):
+async def upload_file(file: UploadFile = File(...), current_user: User = Depends(get_current_active_user)):
     """Upload and process a single file."""
     try:
         content = await file.read()
@@ -101,10 +97,9 @@ async def upload_file(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.delete("/api/documents")
-async def clear_documents(
-    current_user: User = Depends(get_current_active_user)
-):
+async def clear_documents(current_user: User = Depends(get_current_active_user)):
     """Clear all documents from the vector store."""
     try:
         rag_service.clear_collection()
@@ -112,12 +107,8 @@ async def clear_documents(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(
-        "main:app",
-        host=settings.API_HOST,
-        port=settings.API_PORT,
-        workers=settings.API_WORKERS,
-        reload=True
-    ) 
+
+    uvicorn.run("main:app", host=settings.API_HOST, port=settings.API_PORT, workers=settings.API_WORKERS, reload=True)

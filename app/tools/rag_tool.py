@@ -1,4 +1,3 @@
-
 from transformers import Tool
 
 
@@ -31,14 +30,17 @@ class Agent:
             if "No relevant context found" not in context:
                 prompt = f"Based on the following information: '{context}', answer the question: '{user_query}'"
             else:
-                prompt = user_query # Try to answer without context if retrieval fails
+                prompt = user_query  # Try to answer without context if retrieval fails
         else:
             prompt = user_query
 
         input_ids = self.tokenizer.encode(prompt, return_tensors="pt")
-        output = self.model.generate(input_ids, max_length=100, num_return_sequences=1, pad_token_id=self.tokenizer.eos_token_id)
+        output = self.model.generate(
+            input_ids, max_length=100, num_return_sequences=1, pad_token_id=self.tokenizer.eos_token_id
+        )
         response = self.tokenizer.decode(output[0], skip_special_tokens=True)
         return response
+
 
 # Initialize components
 knowledge = {
@@ -48,7 +50,7 @@ knowledge = {
 }
 retrieval_engine = Retrieval(knowledge_base=knowledge)
 rag_tool = RAGTool(retrieval_engine=retrieval_engine)
-agent = Agent("gpt2", rag_tool) # Using a smaller model for demo purposes
+agent = Agent("gpt2", rag_tool)  # Using a smaller model for demo purposes
 
 # Interact with the agent
 print("Welcome to the simple Agentic RAG demo!")

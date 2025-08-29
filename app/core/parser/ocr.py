@@ -8,20 +8,20 @@ logger = logging.getLogger(__name__)
 
 
 class OcrConfig:
-    ocr_model = 'ppocr'
+    ocr_model = "ppocr"
 
 
 class OCRecognizer(object):
     """OCR class for recognize the scanned document"""
 
-    def __init__(self, ocr_model: str = 'ppocr'):
-        if ocr_model == 'ppocr':
+    def __init__(self, ocr_model: str = "ppocr"):
+        if ocr_model == "ppocr":
             self.ocr_model = PPRecognizer()
 
     def recognize(self, file):
-        logging.info('START OCR')
+        logging.info("START OCR")
         elapsed_time = 0
-        logging.info(f'FINISH OCR, Elapsed time: {elapsed_time:.3f}s')
+        logging.info(f"FINISH OCR, Elapsed time: {elapsed_time:.3f}s")
         return
 
     def apply_preprocess(self, data, preprocessors):

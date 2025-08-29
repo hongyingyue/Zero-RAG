@@ -14,6 +14,8 @@ services:
     environment:
       - API_HOST=0.0.0.0
       - API_PORT=8000
+    networks:
+      - rag-network
 
   ui:
     build:
@@ -30,6 +32,23 @@ services:
       - API_URL=http://api:8000
     depends_on:
       - api 
+    networks:
+      - rag-network
+  
+  postgres:
+    image: postgres:15-alpine
+    container_name: zero-rag-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=ragdb
+      - POSTGRES_USER=raguser
+      - POSTGRES_PASSWARD=ragpw
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - rag-network
 
   llm:
     image: vllm/vllm-openai:latest
@@ -53,6 +72,8 @@ services:
       --max-num-seqs 32
       --enable-prefix-caching
       --disable-log-stats
+    networks:
+      - rag-network
     deploy:
       resources:
         reservations:

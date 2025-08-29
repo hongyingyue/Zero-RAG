@@ -57,5 +57,5 @@ class Workflow(Generic[Context]):
 class WorkflowToRun:
     """Workflow to run class definition."""
 
-    workflow: 'workflow'
+    workflow: "workflow"
     config: dict[str, Any]

@@ -75,7 +75,7 @@ class HfLocalLLM(BaseLLM):
         inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
         outputs = self.model.generate(
             **inputs,
-            max_length=max_length + len(inputs['input_ids'][0]),  # Add input length
+            max_length=max_length + len(inputs["input_ids"][0]),  # Add input length
             num_return_sequences=1,
             no_repeat_ngram_size=2,
         )
@@ -88,4 +88,3 @@ class HfLocalLLM(BaseLLM):
 
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(None, self.generate, prompt, max_length)
-    
