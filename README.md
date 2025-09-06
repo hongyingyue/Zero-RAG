@@ -1,41 +1,24 @@
 # Agentic RAG
 
-A powerful and flexible Retrieval-Augmented Generation (RAG) system with agent capabilities, built with FastAPI backend and Streamlit UI.
+A powerful and flexible Retrieval-Augmented Generation (RAG) system with agent capabilities, built with FastAPI backend and JS.
 
 ## Features
 
-- 🤖 OpenAI API Integration
+- 🤖 OpenAI API Integration and local vLLM server
 - 🛠️ Custom Agent Tools
 - 🔍 RAG as a Tool
 - 🎯 FastAPI Backend for Retrieval
-- 🎨 Streamlit UI
+- 🎨 JS Frontend
 - 📚 Document Processing and Embedding
 - 🔄 Streaming Responses
 - 🧪 Comprehensive Testing
 
-## Project Structure
-
-```
-.
-├── app/
-│   ├── api/            # FastAPI endpoints
-│   ├── core/           # Core functionality
-│   ├── models/         # Data models
-│   ├── services/       # Business logic
-│   ├── tools/          # Agent tools
-│   └── ui/             # Streamlit UI
-├── data_generation/    # Data processing scripts
-├── docs/              # Documentation
-├── tests/             # Test suite
-└── docker/            # Docker configuration
-```
 
 ## Setup
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/agentic-rag.git
-cd agentic-rag
+git clone git@github.com:hongyingyue/ZeroRAG.git
 ```
 
 2. Create and activate a virtual environment:
