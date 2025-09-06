@@ -5,7 +5,7 @@ from typing import Optional, Dict, Any
 
 
 def setup_logger(
-    app_name: str = "myapp",
+    app_name: str = "rag-app",
     log_level: str = "INFO",
     log_dir: str = "./logs",
     enable_console: bool = True,
@@ -76,7 +76,6 @@ def setup_logger(
     logger.info(f"Logger initialized for {app_name} at {log_path.absolute()}")
 
 
-# Example usage
 if __name__ == "__main__":
     setup_logger(app_name="demo", log_level="DEBUG")
 
